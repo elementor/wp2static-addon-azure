@@ -181,6 +181,11 @@ class Wp2static_Addon_Azure {
         return $deploy_options;
     }
 
+    public function load_deployment_option_template( $templates ) {
+        $templates[] =  __DIR__ . '/../views/azure_settings_block.phtml';
+
+        return $templates;
+    }
 
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
@@ -194,6 +199,13 @@ class Wp2static_Addon_Azure {
             'wp2static_add_deployment_method_option_to_ui',
             [$this, 'add_deployment_option_to_ui']
         );
+
+        add_filter(
+            'wp2static_load_deploy_option_template',
+            [$this, 'load_deployment_option_template']
+        );
+
+
 	}
 
 	/**
