@@ -175,6 +175,13 @@ class Wp2static_Addon_Azure {
 
 	}
 
+    public function add_deployment_option_to_ui( $deploy_options ) {
+        $deploy_options['azure'] = array('Microsoft Azure');
+
+        return $deploy_options;
+    }
+
+
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
@@ -182,6 +189,11 @@ class Wp2static_Addon_Azure {
 	 */
 	public function run() {
 		$this->loader->run();
+
+        add_filter(
+            'wp2static_add_deployment_method_option_to_ui',
+            [$this, 'add_deployment_option_to_ui']
+        );
 	}
 
 	/**
