@@ -187,6 +187,51 @@ class Wp2static_Addon_Azure {
         return $templates;
     }
 
+    public function add_deployment_option_keys( $keys ) {
+        $new_keys = array(
+          'baseUrl-azure',
+          'azStorageAccountName',
+          'azContainerName',
+          'azAccessKey',
+          'azPath',
+        );
+
+        $keys = array_merge(
+            $keys,
+            $new_keys
+        );
+
+        return $keys;
+    }
+
+    public function whitelist_deployment_option_keys( $keys ) {
+        $whitelist_keys = array(
+          'baseUrl-azure',
+          'azStorageAccountName',
+          'azContainerName',
+          'azPath',
+        );
+
+        $keys = array_merge(
+            $keys,
+            $whitelist_keys
+        );
+
+        return $keys;
+    }
+
+    public function add_post_and_db_keys( $keys ) {
+        $keys['azure'] = array(
+          'baseUrl-azure',
+          'azStorageAccountName',
+          'azContainerName',
+          'azAccessKey',
+          'azPath',
+        );
+
+        return $keys;
+    }
+
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
@@ -205,7 +250,20 @@ class Wp2static_Addon_Azure {
             [$this, 'load_deployment_option_template']
         );
 
+        add_filter(
+            'wp2static_add_option_keys',
+            [$this, 'add_deployment_option_keys']
+        );
 
+        add_filter(
+            'wp2static_whitelist_option_keys',
+            [$this, 'whitelist_deployment_option_keys']
+        );
+
+        add_filter(
+            'wp2static_add_post_and_db_keys',
+            [$this, 'add_post_and_db_keys']
+        );
 	}
 
 	/**

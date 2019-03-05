@@ -13,28 +13,28 @@
       </tr>
       <tr>
         <th scope="row">
-          <label for="azToken"><?php echo __('Personl Access Token', 'static-html-output-plugin');?></label>
+          <label for="azStorageAccountName"><?php echo __('Storage account name', 'static-html-output-plugin');?></label>
         </th>
         <td>
-          <?php $tpl->displayTextfield($this, 'azToken', 'Azure Personal Access Token', '<a href="https://azure.com/settings/tokens/new" target="_blank">How do I get this?</a>', 'password'); ?>
+          <?php $tpl->displayTextfield($this, 'azStorageAccountName', 'Storage account name', '', ''); ?>
         </td>
       </tr>
       <tr>
         <th scope="row">
-          <label for="azRepo"><?php echo __('Account & Repository Name', 'static-html-output-plugin');?></label>
+          <label for="azContainerName"><?php echo __('Container name', 'static-html-output-plugin');?></label>
         </th>
         <td>
-          <?php $tpl->displayTextfield($this, 'azRepo', 'Account / Repository Name', 'ie, leonstafford/wordpress-static-html-plugin'); ?><br>
+          <?php $tpl->displayTextfield($this, 'azContainerName', 'Container name', '', ''); ?><br>
 
-          <p><i>Repository cannot be empty, just create any file via the Azure UI if needed</i></p>
+          <p><i>For <code>$web</code>, enter it as <code>$web</code></i></p>
         </td>
       </tr>
       <tr>
         <th scope="row">
-          <label for="azBranch"><?php echo __('Branch', 'static-html-output-plugin');?></label>
+          <label for="azAccessKey"><?php echo __('Access Key', 'static-html-output-plugin');?></label>
         </th>
         <td>
-          <?php $tpl->displayTextfield($this, 'azBranch', 'Branch', 'usually \'master\' or \'az-pages\''); ?>
+          <?php $tpl->displayTextfield($this, 'azAccessKey', 'Access Key', '', 'password'); ?>
         </td>
       </tr>
       <tr>
@@ -42,7 +42,7 @@
           <label for="azPath"><?php echo __('Subdirectory', 'static-html-output-plugin');?></label>
         </th>
         <td>
-          <?php $tpl->displayTextfield($this, 'azPath', 'Path within repository', 'Usually the repository root (leave this blank) or the \'doc\' folder'); ?>
+          <?php $tpl->displayTextfield($this, 'azPath', 'Path within storage container', '', ''); ?>
         </td>
       </tr>
       <tr>
