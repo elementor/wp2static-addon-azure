@@ -21,7 +21,7 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
                 $this->loadArchive();
                 $this->prepareDeploy();
                 break;
-            case 'azure_transfer_files':
+            case 'azure_upload_files':
                 $this->bootstrap();
                 $this->loadArchive();
                 $this->upload_files();

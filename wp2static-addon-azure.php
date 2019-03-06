@@ -40,8 +40,21 @@ $wp2static_core_dir =
 
 $add_on_dir = dirname( __FILE__ );
 // NOTE: bypass instantiating plugin for specific AJAX requests
-if ( $ajax_action === 'azure_prepare_export' ) {
-    error_log('intercepting request without loading all the crap');
+if ( $ajax_action === 'test_azure' ) {
+    require_once $wp2static_core_dir .
+        '/plugin/WP2Static/SitePublisher.php';
+    require_once $add_on_dir . '/AzureDeployer.php';
+
+    wp_die();
+    return null;
+} else if ( $ajax_action === 'azure_prepare_export' ) {
+    require_once $wp2static_core_dir .
+        '/plugin/WP2Static/SitePublisher.php';
+    require_once $add_on_dir . '/AzureDeployer.php';
+
+    wp_die();
+    return null;
+} else if ( $ajax_action === 'azure_upload_files' ) {
     require_once $wp2static_core_dir .
         '/plugin/WP2Static/SitePublisher.php';
     require_once $add_on_dir . '/AzureDeployer.php';
