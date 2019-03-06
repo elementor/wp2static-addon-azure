@@ -3,7 +3,20 @@
 class WP2Static_Azure extends WP2Static_SitePublisher {
 
     public function __construct() {
-        $this->loadSettings( 'azure' );
+        // calling outside WP chain, need to specify this
+        // Add-on's option keys
+        $deploy_keys = array(
+          'azure',
+          array(
+            'baseUrl-azure',
+            'azStorageAccountName',
+            'azContainerName',
+            'azAccessKey',
+            'azPath',
+          ),
+        );
+
+        $this->loadSettings( 'azure', $deploy_keys );
 
         $this->previous_hashes_path =
             $this->settings['wp_uploads_path'] .
@@ -49,7 +62,8 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
         $this->openPreviousHashesFile();
 
         require_once dirname( __FILE__ ) .
-            '/../WP2Static/MimeTypes.php';
+            '/../static-html-output-plugin' .
+            '/plugin/WP2Static/MimeTypes.php';
 
         foreach ( $lines as $line ) {
             list($local_file, $this->target_path) = explode( ',', $line );
@@ -127,15 +141,16 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
 
     public function test_azure() {
         // create temp file with content
-        $tmpfname = tempnam(sys_get_temp_dir(), 'FOO');
+        $tmpfname = tempnam(sys_get_temp_dir(), 'WP2STATIC');
+
         file_put_contents(
-            $tmpfnamea,
+            $tmpfname,
             'Test WP2Static connectivity'
         );
 
         try {
             $this->put_azure_object(
-                '.tmp_wp2static.txt',
+                'tmp_wp2static.txt',
                 $tmpfname,
                 'text/plain'
             );
@@ -144,6 +159,7 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
                 echo 'SUCCESS';
             }
         } catch ( Exception $e ) {
+            error_log( $e );
             require_once dirname( __FILE__ ) .
                 '/../static-html-output-plugin' .
                 '/plugin/WP2Static/WsLog.php';
@@ -158,6 +174,8 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
         $storageAccount = $this->settings['azStorageAccountName'];
         $filetoUpload = $source_file;
         $containerName = $this->settings['azContainerName'];
+
+
         $blobName = $azure_path;
 
         $destinationURL = "https://$storageAccount.blob.core.windows.net/$containerName/$blobName";
@@ -181,7 +199,7 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
         $arraysign[] = '';                  /*Content-Language*/
         $arraysign[] = $fileLen;            /*Content-Length (include value when zero)*/
         $arraysign[] = '';                  /*Content-MD5*/
-        $arraysign[] = 'text/html';         /*Content-Type*/
+        $arraysign[] = $content_type;         /*Content-Type*/
         $arraysign[] = '';                  /*Date*/
         $arraysign[] = '';                  /*If-Modified-Since */
         $arraysign[] = '';                  /*If-Match*/
@@ -202,7 +220,7 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
             'x-ms-blob-type: BlockBlob',
             'x-ms-date: ' . $currentDate,
             'x-ms-version: 2015-12-11',
-            'Content-Type: text/html',
+            'Content-Type: ' . $content_type,
             'Content-Length: ' . $fileLen
         ];
 
@@ -234,7 +252,7 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
 
         $this->checkForValidResponses(
             $http_code,
-            array( '200' )
+            array( '200', '201' )
         );
 
         curl_close( $ch );
