@@ -59,9 +59,9 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
             if ( ! is_file( $local_file ) ) {
                 continue; }
 
-            if ( isset( $this->settings['s3RemotePath'] ) ) {
+            if ( isset( $this->settings['azPath'] ) ) {
                 $this->target_path =
-                    $this->settings['s3RemotePath'] . '/' . $this->target_path;
+                    $this->settings['azPath'] . '/' . $this->target_path;
             }
 
             $this->logAction(
@@ -154,12 +154,12 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
     }
 
     public function put_azure_object( $azure_path, $source_file, $content_type ) {
-        $accesskey = "";
-        $storageAccount = '';
+        $accesskey = $this->settings['azAccessKey'];
+        $storageAccount = $this->settings['azStorageAccountName'];
         $filetoUpload = $source_file;
-        $containerName = '$web';
+        $containerName = $this->settings['azContainerName'];
         $blobName = $azure_path;
-        
+
         $destinationURL = "https://$storageAccount.blob.core.windows.net/$containerName/$blobName";
 
         $this->logAction( "PUT'ing file to {$azure_path} in Azure" );
