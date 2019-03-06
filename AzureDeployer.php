@@ -126,10 +126,17 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
     }
 
     public function test_azure() {
+        // create temp file with content
+        $tmpfname = tempnam(sys_get_temp_dir(), 'FOO');
+        file_put_contents(
+            $tmpfnamea,
+            'Test WP2Static connectivity'
+        );
+
         try {
             $this->put_azure_object(
                 '.tmp_wp2static.txt',
-                'Test WP2Static connectivity',
+                $tmpfname,
                 'text/plain'
             );
 
@@ -146,11 +153,10 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
         }
     }
 
-    public function put_azure_object( $azure_path, $content, $content_type ) {
+    public function put_azure_object( $azure_path, $source_file, $content_type ) {
         $accesskey = "";
         $storageAccount = '';
-        // TODO: change this to use the $content value
-        $filetoUpload = realpath('./index.html');
+        $filetoUpload = $source_file;
         $containerName = '$web';
         $blobName = $azure_path;
         
