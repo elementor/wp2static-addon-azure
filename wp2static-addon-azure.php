@@ -31,6 +31,25 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+// @codingStandardsIgnoreStart
+$ajax_action = isset( $_POST['ajax_action'] ) ? $_POST['ajax_action'] : '';
+// @codingStandardsIgnoreEnd
+
+$wp2static_core_dir =
+    dirname( __FILE__ ) . '/../static-html-output-plugin';
+
+$add_on_dir = dirname( __FILE__ );
+// NOTE: bypass instantiating plugin for specific AJAX requests
+if ( $ajax_action === 'azure_prepare_export' ) {
+    error_log('intercepting request without loading all the crap');
+    require_once $wp2static_core_dir .
+        '/plugin/WP2Static/SitePublisher.php';
+    require_once $add_on_dir . '/AzureDeployer.php';
+
+    wp_die();
+    return null;
+}
+
 /**
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
