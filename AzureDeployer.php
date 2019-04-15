@@ -49,8 +49,6 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
             echo 'ERROR';
             die(); }
 
-        $this->initiateProgressIndicator();
-
         $batch_size = $this->settings['deployBatchSize'];
 
         if ( $batch_size > $this->files_remaining ) {
@@ -92,7 +90,7 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
 
                 if ( $prev != $current ) {
                     try {
-                        $this->put_s3_object(
+                        $this->put_azure_object(
                             $this->target_path .
                                     basename( $local_file ),
                             $this->local_file_contents,
@@ -110,7 +108,7 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
                 }
             } else {
                 try {
-                    $this->put_s3_object(
+                    $this->put_azure_object(
                         $this->target_path .
                                 basename( $local_file ),
                         $this->local_file_contents,
@@ -126,8 +124,6 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
                 $this->hash_key,
                 $this->local_file_contents
             );
-
-            $this->updateProgress();
         }
 
         $this->writeFilePathAndHashesToFile();
@@ -187,6 +183,8 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
 
         $currentDate = gmdate("D, d M Y H:i:s T", time());
         $handle = fopen($filetoUpload, "r");
+
+        error_log(print_r($handle, true));
         $fileLen = filesize($filetoUpload);
 
         $headerResource = "x-ms-blob-cache-control:max-age=3600\nx-ms-blob-type:BlockBlob\nx-ms-date:$currentDate\nx-ms-version:2015-12-11";
@@ -224,8 +222,6 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
             'Content-Length: ' . $fileLen
         ];
 
-        ////////
-
         $this->logAction( "Azure URL: {$destinationURL}" );
 
         $ch = curl_init( $destinationURL );
@@ -240,9 +236,9 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
         curl_setopt( $ch, CURLOPT_USERAGENT, 'WP2Static.com' );
         curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 0 );
         curl_setopt( $ch, CURLOPT_TIMEOUT, 600 );
-        curl_setopt( $ch, CURLOPT_INFILE, $handle ); 
-        curl_setopt( $ch, CURLOPT_INFILESIZE, $fileLen ); 
-        curl_setopt( $ch, CURLOPT_UPLOAD, true ); 
+        curl_setopt( $ch, CURLOPT_INFILE, $handle );
+        curl_setopt( $ch, CURLOPT_INFILESIZE, $fileLen );
+        curl_setopt( $ch, CURLOPT_UPLOAD, true );
 
         $output = curl_exec( $ch );
         $http_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
