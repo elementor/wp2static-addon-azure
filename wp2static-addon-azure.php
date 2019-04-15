@@ -51,19 +51,6 @@ if ( $ajax_action === 'test_azure' ) {
 
 define( 'PLUGIN_NAME_VERSION', '0.1' );
 
-function activate_wp2static_addon_azure() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp2static-addon-azure-activator.php';
-	Wp2static_Addon_Azure_Activator::activate();
-}
-
-function deactivate_wp2static_addon_azure() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp2static-addon-azure-deactivator.php';
-	Wp2static_Addon_Azure_Deactivator::deactivate();
-}
-
-register_activation_hook( __FILE__, 'activate_wp2static_addon_azure' );
-register_deactivation_hook( __FILE__, 'deactivate_wp2static_addon_azure' );
-
 require plugin_dir_path( __FILE__ ) . 'includes/class-wp2static-addon-azure.php';
 
 function run_wp2static_addon_azure() {
