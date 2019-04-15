@@ -166,7 +166,7 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
     }
 
     public function put_azure_object( $azure_path, $source_file, $content_type ) {
-        // DEBUG: override content type for SVGs which Azure chokes on
+        // NOTE: override content type for SVGs which Azure chokes on
         if ( $content_type === 'image/svg+xml' ) {
             $content_type = 'image/svg';
         }
