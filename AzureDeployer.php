@@ -93,7 +93,7 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
                         $this->put_azure_object(
                             $this->target_path .
                                     basename( $local_file ),
-                            $this->local_file_contents,
+                            $local_file,
                             GuessMimeType( $local_file )
                         );
 
@@ -111,7 +111,7 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
                     $this->put_azure_object(
                         $this->target_path .
                                 basename( $local_file ),
-                        $this->local_file_contents,
+                        $local_file,
                         GuessMimeType( $local_file )
                     );
 
@@ -122,7 +122,7 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
 
             $this->recordFilePathAndHashInMemory(
                 $this->hash_key,
-                $this->local_file_contents
+                $local_file
             );
         }
 
@@ -166,6 +166,11 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
     }
 
     public function put_azure_object( $azure_path, $source_file, $content_type ) {
+        // DEBUG: override content type for SVGs which Azure chokes on
+        if ( $content_type === 'image/svg+xml' ) {
+            $content_type = 'image/svg';
+        }
+
         $accesskey = $this->settings['azAccessKey'];
         $storageAccount = $this->settings['azStorageAccountName'];
         $filetoUpload = $source_file;
@@ -178,13 +183,10 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
 
         $this->logAction( "PUT'ing file to {$azure_path} in Azure" );
 
-        /////////
-
-
         $currentDate = gmdate("D, d M Y H:i:s T", time());
+
         $handle = fopen($filetoUpload, "r");
 
-        error_log(print_r($handle, true));
         $fileLen = filesize($filetoUpload);
 
         $headerResource = "x-ms-blob-cache-control:max-age=3600\nx-ms-blob-type:BlockBlob\nx-ms-date:$currentDate\nx-ms-version:2015-12-11";
