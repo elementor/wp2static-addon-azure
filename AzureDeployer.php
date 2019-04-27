@@ -77,7 +77,7 @@ class WP2Static_Azure extends WP2Static_SitePublisher {
             }
 
             $this->logAction(
-                "Uploading {$local_file} to {$this->target_path} in S3"
+                "Uploading {$local_file} to {$this->target_path} in Azure"
             );
 
             $this->local_file_contents = file_get_contents( $local_file );

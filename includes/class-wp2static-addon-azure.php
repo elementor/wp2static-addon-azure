@@ -36,7 +36,10 @@ class Wp2static_Addon_Azure {
 
 	private function define_admin_hooks() {
 		$plugin_admin = new Wp2static_Addon_Azure_Admin( $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+
+        if ( isset( $_GET['page'] ) && ( $_GET['page'] == 'wp2static')) {
+            $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+        }
 	}
 
     public function add_deployment_option_to_ui( $deploy_options ) {
